@@ -1,13 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"log/slog"
 	"time"
 
-	"github.com/getsentry/sentry-go"
 	"github.com/thirdfort/go-slogctx"
-	"github.com/thirdfort/thirdfort-go-code-review/internal"
 	"github.com/thirdfort/thirdfort-go-code-review/internal/cache"
 	"github.com/thirdfort/thirdfort-go-code-review/internal/config"
 	"github.com/thirdfort/thirdfort-go-code-review/internal/repositories"
@@ -45,8 +42,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
-	sentry.CaptureException(fmt.Errorf("Consumer API started - version: %s - build date: %s - git hash: %s", internal.Version, internal.BuildTime, internal.GitHash))
 
 	err = web.Run()
 	if err != nil {

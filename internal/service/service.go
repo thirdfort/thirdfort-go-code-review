@@ -16,21 +16,12 @@ import (
 type MainService interface {
 	CheckTxOwnership(ctx context.Context, transactionID string) error
 	GetActor(ctx context.Context) (*models.Actor, error)
-	GetPersonalInformation(ctx context.Context, item *models.PersonalInformation) (*models.PersonalInformation, error)
 	GetTasks(ctx context.Context, txID string) []any
 	GetTransaction(ctx context.Context, tx *models.Transaction) (*models.Transaction, error)
 	GetTransactions(ctx context.Context) ([]models.Transaction, error)
 	HandlePutExpectation(ctx context.Context, transactionID *string, expectationID *string, item any) error
 	PatchTransaction(ctx context.Context, txStatus *models.TransactionStatus) (*models.Transaction, error)
-	PutPersonalInformation(ctx context.Context, item *models.PersonalInformation) (*models.PersonalInformation, error)
 	Validate(item any, typeName string) (any, error)
-}
-
-type Ops[T models.DataType] interface {
-	Create(context.Context, T) (T, error)
-	Get(context.Context, T) (any, error)
-	Update(context.Context, T) (T, error)
-	Delete(context.Context, T) error
 }
 
 type MockService struct {

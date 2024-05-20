@@ -23,17 +23,10 @@ type DataStore interface {
 	CreateActor(ctx context.Context, actorData map[string]string) (*models.Actor, error)
 	GetActor(ctx context.Context, actor *models.Actor) (*models.Actor, error)
 	UpdateActor(ctx context.Context, actorID *string, actorData map[string]string) (*models.Actor, error)
-	CreateExpectationMetadata(ctx context.Context, exptMetadata *models.ExpectationMetadata) (*models.ExpectationMetadata, error)
-	CreateFingerprint(ctx context.Context, fingerprint *models.Fingerprint) (*models.Fingerprint, error)
 	CreateTransaction(ctx context.Context, transaction *models.Transaction) (*models.Transaction, error)
-	GetExpectationMetadata(ctx context.Context, exptMetadata *models.ExpectationMetadata) (*models.ExpectationMetadata, error)
-	UpdateExpectationMetadata(ctx context.Context, exptMetadata *models.ExpectationMetadata) (*models.ExpectationMetadata, error)
-	GetFingerprint(ctx context.Context, fingerprint *models.Fingerprint) (*models.Fingerprint, error)
 	UpdateTransaction(ctx context.Context, transaction *models.Transaction) (*models.Transaction, error)
 	GetTransaction(ctx context.Context, transaction *models.Transaction) (*models.Transaction, error)
 	GetTransactions(ctx context.Context, transaction *models.Transaction) ([]models.Transaction, error)
-	PutPersonalInformation(ctx context.Context, task *models.PersonalInformation) (*models.PersonalInformation, error)
-	GetPersonalInformation(ctx context.Context, task *models.PersonalInformation) (*models.PersonalInformation, error)
 }
 
 // We'll inject this dependency into the handlers and feed it down to the repositories where it'll be used
