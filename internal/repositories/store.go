@@ -26,6 +26,7 @@ type DataStore interface {
 	UpdateTransaction(ctx context.Context, transaction *models.Transaction) (*models.Transaction, error)
 	GetTransaction(ctx context.Context, transaction *models.Transaction) (*models.Transaction, error)
 	GetTransactions(ctx context.Context, transaction *models.Transaction) ([]models.Transaction, error)
+	FindAddress(ctx context.Context, transactionId string) (*models.Address, error)
 }
 
 // We'll inject this dependency into the handlers and feed it down to the repositories where it'll be used
