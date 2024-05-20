@@ -10,6 +10,8 @@ import (
 	"github.com/thirdfort/thirdfort-go-code-review/internal/repositories"
 )
 
+var MyService Service
+
 type MainService interface {
 	CheckTxOwnership(ctx context.Context, transactionID string) error
 	GetActor(ctx context.Context) (*models.Actor, error)

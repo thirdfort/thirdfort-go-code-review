@@ -8,15 +8,16 @@ import (
 
 type Transaction struct {
 	Shared
-	ID           *string `json:"id" path:"txID" gorm:"primaryKey;column:id" description:"Transaction ID" example:"cq1qh5c23amg0302nqv0"`
-	EventID      *string `json:"event_id" gorm:"column:event_id" description:"Event ID associated with transaction" example:"cpkz6tb23amg03015m70"`
-	Name         *string `json:"name" description:"Transaction's name" example:"My Transaction"`
-	TenantName   *string `json:"tenant_name" gorm:"column:tenant_name" description:"Name of tenant" example:"Thirdfort Limited"`
-	ConsumerName *string `json:"consumer_name" gorm:"column:actor_name" description:"Consumer's name" example:"Bob Bobson"`
-	Ref          *string `json:"ref" gorm:"column:ref" description:"Transaction reference" example:"MyTransaction01"`
-	Status       string  `json:"status" description:"Status of the transaction" example:"not_started" enum:"not_started,in_progress,completed,cancelled"`
-	ActorID      *string `json:"-" gorm:"primaryKey;column:actor_id"`
-	Metadata     *string `json:"metadata" gorm:"type:jsonb" description:"Transaction Metadata from PA"`
+	ID           *string  `json:"id" path:"txID" gorm:"primaryKey;column:id" description:"Transaction ID" example:"cq1qh5c23amg0302nqv0"`
+	EventID      *string  `json:"event_id" gorm:"column:event_id" description:"Event ID associated with transaction" example:"cpkz6tb23amg03015m70"`
+	Name         *string  `json:"name" description:"Transaction's name" example:"My Transaction"`
+	TenantName   *string  `json:"tenant_name" gorm:"column:tenant_name" description:"Name of tenant" example:"Thirdfort Limited"`
+	ConsumerName *string  `json:"consumer_name" gorm:"column:actor_name" description:"Consumer's name" example:"Bob Bobson"`
+	Ref          *string  `json:"ref" gorm:"column:ref" description:"Transaction reference" example:"MyTransaction01"`
+	Status       string   `json:"status" description:"Status of the transaction" example:"not_started" enum:"not_started,in_progress,completed,cancelled"`
+	ActorID      *string  `json:"-" gorm:"primaryKey;column:actor_id"`
+	Metadata     *string  `json:"metadata" gorm:"type:jsonb" description:"Transaction Metadata from PA"`
+	Address      *Address `json:"address" gorm:"type:jsonb" description:"Address for transaction"`
 }
 
 type TransactionResponse struct {
@@ -28,6 +29,7 @@ type TransactionResponse struct {
 	Ref          string    `json:"ref" description:"Transaction reference" example:"MyTransaction01"`
 	Status       string    `json:"status" description:"Status of the transaction" example:"not_started" enum:"not_started,in_progress,completed,cancelled"`
 	CreatedAt    time.Time `json:"created_at" description:"Transaction creation time" example:"2021-07-01T12:00:00Z"`
+	Address      *Address  `json:"address" gorm:"type:jsonb" description:"Address for transaction"`
 }
 
 func (a *Transaction) ToResponse() *TransactionResponse {

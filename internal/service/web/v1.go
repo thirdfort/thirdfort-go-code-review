@@ -11,6 +11,10 @@ func (s *WebService) setV1Routes() {
 	// Transaction routes
 	txRouter := v1Router.Group("/transaction", "transaction", "Transaction endpoints")
 	s.transactionRoutes(txRouter)
+
+	// Address Routes
+	addressRouter := v1Router.Group("/address", "address", "Address endpoints")
+	s.AddressRoutes(addressRouter)
 }
 
 func (s *WebService) transactionRoutes(router *fizz.RouterGroup) {
@@ -28,4 +32,16 @@ func (s *WebService) transactionRoutes(router *fizz.RouterGroup) {
 		fizz.ID("PatchTransactionByID"),
 		fizz.Summary("GET Transaction by ID"),
 	}, tonic.Handler(s.PatchTransaction, 200))
+}
+
+func (s *WebService) AddressRoutes(router *fizz.RouterGroup) {
+	router.Handle("", "GET", []fizz.OperationOption{
+		fizz.ID("GetAddressByID"),
+		fizz.Summary("GET Address by ID"),
+	}, tonic.Handler(FindAddress, 200))
+
+	router.Handle("", "PATCH", []fizz.OperationOption{
+		fizz.ID("PatchAddressByID"),
+		fizz.Summary("PATCH Address by ID"),
+	}, tonic.Handler(UpdateAddress, 200))
 }
