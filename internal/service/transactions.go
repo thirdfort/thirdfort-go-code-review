@@ -83,23 +83,3 @@ func (s *Service) GetTransactions(ctx context.Context) ([]models.Transaction, er
 
 	return transactions, nil
 }
-
-func (s *Service) getTxFromSlice(txID *string, transactions []models.Transaction) *models.Transaction {
-	for _, tx := range transactions {
-		if *tx.ID == *txID {
-			return &tx
-		}
-	}
-
-	return nil
-}
-
-func updateTransactions(transactions []models.Transaction, updateTx *models.Transaction) []models.Transaction {
-	for i, tx := range transactions {
-		if tx.ID == updateTx.ID {
-			transactions[i] = *updateTx
-		}
-	}
-
-	return transactions
-}

@@ -25,22 +25,3 @@ func (s *Service) getIDFromCtx(ctx context.Context) string {
 	valueMap := internal.GetContextHeaders(ctx)
 	return internal.SafeGetValueFromMap(valueMap, "ID")
 }
-
-// Get actor or create if not found
-func (s *Service) getCreateActor(ctx context.Context, id *string, actorData map[string]string) (*models.Actor, error) {
-
-	actor, err := s.DataStore.GetActor(ctx, &models.Actor{ID: id})
-	if err != nil {
-		return nil, errors.Wrap(err, "getCreateActor:GetActor - could not match actor with fingerprint")
-	}
-
-	// We only have partial actor data from events, update
-	if actor.Mobile == "" {
-		actor, err = s.DataStore.UpdateActor(ctx, actor.ID, actorData)
-		if err != nil {
-			return nil, errors.Wrap(err, "getCreateActor: CreateActor")
-		}
-	}
-
-	return actor, nil
-}

@@ -11,7 +11,6 @@ import (
 	"github.com/loopfz/gadgeto/tonic"
 	sloggin "github.com/samber/slog-gin"
 	"github.com/thirdfort/go-gin/middleware"
-	"github.com/thirdfort/go-otel/instrumentation/otelgin"
 	"github.com/thirdfort/go-slogctx"
 	"github.com/thirdfort/thirdfort-go-code-review/internal"
 	"github.com/thirdfort/thirdfort-go-code-review/internal/config"
@@ -44,13 +43,6 @@ func New(conf *config.Config, srv *service.Service) (*WebService, error) {
 	}
 
 	engine := gin.New()
-
-	if conf.Otel.Enabled {
-		engine.Use(
-			otelgin.Metrics(),
-			otelgin.Trace(fmt.Sprintf("%s-otel", conf.App.Name)),
-		)
-	}
 
 	engine.Use(
 		sloggin.NewWithConfig(srv.Logger.GetLogger(), logConfig),

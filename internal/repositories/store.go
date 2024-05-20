@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"log/slog"
 
@@ -128,7 +127,6 @@ func NewStoreFromDSN(conf *config.Config, dsn string, log *slogctx.Logger) (*Sto
 
 	return &Store{
 		db:   db,
-		log:  log,
 		conf: conf,
 	}, nil
 }
@@ -140,31 +138,6 @@ func (s *Store) Close() {
 	}
 }
 
-func (s *Store) CreateDatabase(dbName string) *gorm.DB {
-	if s.conf.App.Env == config.Testing || s.conf.App.Env == config.Local {
-		return s.db.Exec(fmt.Sprintf("CREATE DATABASE \"%s\"", dbName))
-	}
-
-	slogctx.Error(nil, "Not allowed to create database outside testing environment",
-		slog.String("environment", string(s.conf.App.Env)))
-
-	return nil
-}
-
-func (s *Store) DropTables() error {
-	if s.conf.App.Env == config.Testing || s.conf.App.Env == config.Local {
-		return migrate.DropTables(s.db)
-	}
-
-	err := errors.New("Not allowed to drop tables outside testing environment")
-
-	slogctx.Error(nil, err.Error(),
-		slog.String("environment", string(s.conf.App.Env)))
-
-	return err
-}
-
-// TODO: Check how to get sql - this doesn't seem to work
 func (s *Store) logError(ctx context.Context, res *gorm.DB) {
 	slogctx.Error(ctx, "error performing query",
 		slog.String("sql", res.Statement.SQL.String()),

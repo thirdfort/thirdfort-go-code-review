@@ -1,10 +1,7 @@
 package config
 
 import (
-	"encoding/json"
-	"fmt"
 	"os"
-	"time"
 
 	"github.com/ilyakaznacheev/cleanenv"
 	"github.com/pkg/errors"
@@ -43,40 +40,13 @@ type Config struct {
 		EnableDebug bool   `env:"DEBUG" yaml:"debug" env-default:"false"`
 	} `yaml:"postgres" env-prefix:"CONAPI_POSTGRES_"`
 	Clients struct {
-		Onfido struct {
-			AppID struct {
-				Android string `env:"ANDROID" yaml:"android" env-default:"app.thirdfort.android.sandbox"`
-				Ios     string `env:"IOS" yaml:"ios" env-default:"app.thirdfort.ios.sandbox"`
-			} `env:"APPID_" yaml:"app_id"`
-		} `yaml:"onfido" env-prefix:"CONAPI_ONFIDO_"`
 		PlatformAPI struct {
-			Aud       string `env:"AUD" env-default:"https://api-t.thirdfort.io/v2/"`
-			Url       string `env:"URL" env-default:"https://sandbox.api.thirdfort.io"`
+			Aud       string `env:"AUD"`
+			Url       string `env:"URL"`
 			TimeoutMs int    `env:"TIMEOUT" yaml:"timeout_ms" env-default:"15000"`
 			Retries   int    `env:"RETRYMAX" yaml:"retry_max" env-default:"5"`
 		} `yaml:"platform-api" env-prefix:"PA_"`
-		Jwt struct {
-			Aud     []string `env:"AUD" env-default:"[https://dev.api.thirdfort.io/v2,sandbox-thirdfort-app,https://sandbox.api.thirdfort.io/v2/,https://sandbox-tf.eu.auth0.com/userinfo]"`
-			Issuers struct {
-				Consumer []string `env:"ISSUERS_CONSUMER" env-default:"[https://securetoken.google.com/sandbox-thirdfort-app]"`
-			}
-		} `yaml:"jwt" env-prefix:"JWT_"`
 	} `yaml:"clients" env-prefix:"CONAPI_"`
-	Otel struct {
-		Enabled         bool          `env:"ENABLED" env-default:"false"`
-		PushInterval    time.Duration `env:"PUSH_INTERVAL" yaml:"push_interval" env-default:"10000ms"`
-		RuntimeInterval time.Duration `env:"RUNTIME_INTERVAL" yaml:"runtime_interval" env-default:"15000ms"`
-		SamplingRatio   float64       `env:"SAMPLING_RATIO" yaml:"sampling_ratio" env-default:"1"`
-	} `yaml:"otel" env-prefix:"CONAPI_OTEL_"`
-	Sentry struct {
-		Dsn         string      `env:"DSN" yaml:"dsn" env-default:""`
-		Environment Environment `env:"ENV" yaml:"environment" env-default:"local"`
-	} `yaml:"sentry" env-prefix:"CONAPI_SENTRY_"`
-	PubSub struct {
-		ProjectID string `env:"PROJECT_ID" env-default:"local"`
-		Timeout   int    `env:"TIMEOUT" env-default:"500"`
-		Topic     string `env:"TOPIC" env-default:"consumer-api"`
-	} `yaml:"pubsub" env-prefix:"CONAPI_PUBSUB_"`
 }
 
 func New() (*Config, error) {
@@ -111,11 +81,4 @@ func New() (*Config, error) {
 	}
 
 	return &conf, nil
-}
-
-func printConf(conf Config) {
-	c, err := json.MarshalIndent(conf, "", "  ")
-	if err == nil {
-		fmt.Printf("Config: %s\n", string(c))
-	}
 }
