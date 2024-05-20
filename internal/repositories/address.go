@@ -28,6 +28,12 @@ func (s *Store) UpdateAddress(ctx context.Context, transactionID string, newAddr
 		return nil, errors.New("no transaction")
 	} else {
 		txn.Address = &newAddress
+
+		res := db.WithContext(ctx).Save(txn)
+		if res.Error != nil {
+			return nil, res.Error
+		}
+
 		return txn.Address, nil
 	}
 }
