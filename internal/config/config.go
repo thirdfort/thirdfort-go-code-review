@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"time"
 
 	"github.com/ilyakaznacheev/cleanenv"
 	"github.com/pkg/errors"
@@ -30,7 +31,7 @@ type Config struct {
 	Service struct {
 		Port    int    `env:"PORT" env-default:"6060"`
 		Address string `env:"ADDRESS" env-default:"0.0.0.0"`
-	} `yaml:"service" env-prefix:"CONAPI_"`
+	} `yaml:"service" env-prefix:"API_"`
 	Postgres struct {
 		User        string `env:"USER" yaml:"user" env-default:"postgres"`
 		Password    string `env:"PASSWORD" yaml:"password" env-default:"postgres"`
@@ -38,7 +39,7 @@ type Config struct {
 		Database    string `env:"NAME" yaml:"name" env-default:"consumer-api"`
 		Port        string `env:"PORT" yaml:"port" env-default:"5432"`
 		EnableDebug bool   `env:"DEBUG" yaml:"debug" env-default:"false"`
-	} `yaml:"postgres" env-prefix:"CONAPI_POSTGRES_"`
+	} `yaml:"postgres" env-prefix:"API_POSTGRES_"`
 	Clients struct {
 		PlatformAPI struct {
 			Aud       string `env:"AUD"`
@@ -46,7 +47,22 @@ type Config struct {
 			TimeoutMs int    `env:"TIMEOUT" yaml:"timeout_ms" env-default:"15000"`
 			Retries   int    `env:"RETRYMAX" yaml:"retry_max" env-default:"5"`
 		} `yaml:"platform-api" env-prefix:"PA_"`
-	} `yaml:"clients" env-prefix:"CONAPI_"`
+	} `yaml:"clients" env-prefix:"API_"`
+	Otel struct {
+		Enabled         bool          `env:"ENABLED" env-default:"false"`
+		PushInterval    time.Duration `env:"PUSH_INTERVAL" yaml:"push_interval" env-default:"10000ms"`
+		RuntimeInterval time.Duration `env:"RUNTIME_INTERVAL" yaml:"runtime_interval" env-default:"15000ms"`
+		SamplingRatio   float64       `env:"SAMPLING_RATIO" yaml:"sampling_ratio" env-default:"1"`
+	} `yaml:"otel" env-prefix:"API_OTEL_"`
+	Sentry struct {
+		Dsn         string      `env:"DSN" yaml:"dsn" env-default:""`
+		Environment Environment `env:"ENV" yaml:"environment" env-default:"local"`
+	} `yaml:"sentry" env-prefix:"API_SENTRY_"`
+	PubSub struct {
+		ProjectID string `env:"PROJECT_ID" env-default:"local"`
+		Timeout   int    `env:"TIMEOUT" env-default:"500"`
+		Topic     string `env:"TOPIC" env-default:"consumer-api"`
+	} `yaml:"pubsub" env-prefix:"API_PUBSUB_"`
 }
 
 func New() (*Config, error) {
@@ -60,11 +76,6 @@ func New() (*Config, error) {
 		if err != nil {
 			return nil, errors.Wrap(err, "ReadEnv: error processing envconfig")
 		}
-
-		// if conf.App.Debug {
-		// 	printConf(conf)
-		// }
-
 		return &conf, nil
 	}
 	if err != nil {
@@ -74,10 +85,6 @@ func New() (*Config, error) {
 	err = cleanenv.ReadConfig(configFile, &conf)
 	if err != nil {
 		return nil, errors.Wrap(err, "ReadConfig: error processing envconfig")
-	}
-
-	if conf.App.Debug {
-		// printConf(conf)
 	}
 
 	return &conf, nil
