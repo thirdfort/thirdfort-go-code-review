@@ -1,0 +1,50 @@
+version: '3'
+services:
+  postgres:
+    image: postgres
+    container_name: postgres-test
+    hostname: postgres
+    environment:
+      PGUSER: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: consumer-api-test
+    healthcheck:
+      test: pg_isready
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - 15432:5432
+    networks:
+      - consumerapi
+  mockpa:
+    hostname: mock-pa
+    container_name: mock-platformapi
+    build: ./testing/mock_services/platformapi/.
+    ports:
+      - 13000:8001
+    restart: on-failure
+    networks:
+      - consumerapi
+  consumer-api:
+    hostname: consumer-api
+    container_name: consumer-api-test
+    environment:
+      CONAPI_PA_URL: http://mock-pa:8001
+      CONAPI_POSTGRES_NAME: consumer-api-test
+      ENV: testing
+      DEBUG: true
+    build:
+      context: .
+    ports:
+      - 16060:6060
+    restart: on-failure
+    depends_on:
+      - postgres
+      - mockpa
+    networks:
+      - consumerapi
+networks:
+  consumerapi:
+    driver: bridge
